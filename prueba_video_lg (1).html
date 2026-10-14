@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prueba de video - LG</title>
+<style>
+html,body{margin:0;padding:0;width:100%;height:100%;background:#000;color:#fff;font-family:Arial,sans-serif;overflow:hidden}
+video{display:block;width:100%;height:100%;object-fit:contain;background:#000}
+#status{position:absolute;left:10px;top:10px;background:rgba(0,0,0,.7);padding:8px 12px;font-size:16px;z-index:3}
+#start{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:18px 28px;font-size:22px;z-index:4;background:#fff;color:#111;border:0;cursor:pointer}
+</style>
+</head>
+<body>
+<div id="status">Cargando video...</div>
+<video id="video" autoplay loop muted playsinline webkit-playsinline preload="auto">
+<source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+Este navegador no admite video HTML5.
+</video>
+<button id="start" type="button" style="display:none">Iniciar video</button>
+<script>
+(function(){
+ var video=document.getElementById('video');
+ var status=document.getElementById('status');
+ var start=document.getElementById('start');
+ function msg(s){status.innerHTML=s;}
+ function play(){
+  video.muted=true;
+  var result;
+  try{result=video.play();}catch(e){msg('Inicio automatico bloqueado');start.style.display='block';return;}
+  if(result && typeof result.then==='function'){
+   result.then(function(){msg('Reproduciendo - bucle activo');start.style.display='none';},function(){msg('Pulsa Iniciar video');start.style.display='block';});
+  }
+ }
+ video.addEventListener('playing',function(){msg('Reproduciendo - bucle activo');start.style.display='none';});
+ video.addEventListener('pause',function(){msg('Video en pausa');start.style.display='block';});
+ video.addEventListener('error',function(){msg('Error al cargar video');start.style.display='block';});
+ video.addEventListener('ended',function(){msg('Video terminado; reiniciando...');video.currentTime=0;play();});
+ start.onclick=play;
+ window.onload=play;
+})();
+</script>
+</body>
+</html>
